@@ -10,6 +10,18 @@ fn to_item(pkg: registry::Package) -> powerpack::Item<'static> {
         .subtitle("Open in Crates.io →")
         .arg(format!("https://crates.io/crates/{}", pkg.name))
         .icon(powerpack::Icon::new("icon.png"))
+        .modifier(
+            powerpack::ModifierKey::Option,
+            powerpack::ModifierData::new()
+                .subtitle("Open in Lib.rs →")
+                .arg(format!("https://lib.rs/crates/{}", pkg.name)),
+        )
+        .modifier(
+            powerpack::ModifierKey::Shift,
+            powerpack::ModifierData::new()
+                .subtitle("Open in Docs.rs →")
+                .arg(format!("https://docs.rs/{}", pkg.name)),
+        )
 }
 
 fn output(pkgs: impl Iterator<Item = registry::Package>) -> Result<()> {
