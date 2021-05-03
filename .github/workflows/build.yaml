@@ -1,0 +1,77 @@
+name: build
+
+on: [push, pull_request]
+
+env:
+  RUSTFLAGS: --deny warnings
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        toolchain: [stable, beta, nightly]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.toolchain }}
+        components: rustfmt, clippy
+        override: true
+
+    - name: Rustfmt
+      run: cargo fmt -- --check
+
+    - name: Clippy
+      run: cargo clippy --workspace --all-targets
+
+  check-version:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Calculate version from tag
+        id: version
+        run: echo "::set-output name=value::${GITHUB_REF#refs/tags/}"
+
+      - name: Check tag against package version
+        run: grep '^version = "${{ steps.version.outputs.value }}"$' Cargo.toml
+
+  release:
+    needs: check-version
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: extractions/setup-powerpack@v1
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Calculate version from tag
+        id: version
+        run: echo "::set-output name=value::${GITHUB_REF#refs/tags/}"
+
+      - name: Archive
+        id: archive
+        run: |
+          archive=crates-${{ steps.version.outputs.value }}-x86_64-apple-darwin.alfredworkflow
+          powerpack package
+          mv target/workflow/crates.alfredworkflow "$archive"
+          echo "::set-output name=path::$archive"
+
+      - uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: ${{ steps.archive.outputs.path }}
