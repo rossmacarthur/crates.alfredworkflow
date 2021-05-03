@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>name</key>
-	<string>crates-alfred-workflow</string>
+	<string>crates</string>
 	<key>description</key>
-	<string>Search for Rust crates</string>
+	<string>Search for Rust crates.</string>
 	<key>bundleid</key>
 	<string>io.macarthur.ross.crates</string>
 	<key>createdby</key>
@@ -16,7 +16,7 @@
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>C5AA69B0-47A6-477F-89F7-5F757DACFA82</string>
+				<string>D23842F2-2271-4DAE-AC91-FD8FFA716ADB</string>
 			</dict>
 		</array>
 	</dict>
@@ -29,7 +29,7 @@
 			<key>ypos</key>
 			<integer>50</integer>
 		</dict>
-		<key>C5AA69B0-47A6-477F-89F7-5F757DACFA82</key>
+		<key>D23842F2-2271-4DAE-AC91-FD8FFA716ADB</key>
 		<dict>
 			<key>xpos</key>
 			<integer>225</integer>
@@ -41,13 +41,19 @@
 	<array>
 		<dict>
 			<key>uid</key>
-			<string>C5AA69B0-47A6-477F-89F7-5F757DACFA82</string>
+			<string>D23842F2-2271-4DAE-AC91-FD8FFA716ADB</string>
 			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
+			<string>alfred.workflow.action.openurl</string>
+			<key>version</key>
+			<integer>1</integer>
 			<key>config</key>
 			<dict>
-				<key>clipboardtext</key>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
 				<string>{query}</string>
+				<key>utf8</key>
+				<true/>
 			</dict>
 		</dict>
 		<dict>

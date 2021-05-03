@@ -1,19 +1,24 @@
+mod registry;
+
 use std::env;
 use std::iter;
 
 use anyhow::Result;
 
+fn to_item(pkg: registry::Package) -> powerpack::Item<'static> {
+    powerpack::Item::new(format!("{} v{}", pkg.name, pkg.vers))
+        .subtitle("Open in Crates.io →")
+        .arg(format!("https://crates.io/crates/{}", pkg.name))
+        .icon(powerpack::Icon::new("icon.png"))
+}
+
+fn output(pkgs: impl Iterator<Item = registry::Package>) -> Result<()> {
+    Ok(powerpack::output(pkgs.map(to_item))?)
+}
+
 fn main() -> Result<()> {
-    // Alfred passes in a single argument for the user query.
-    let query = env::args().nth(1);
-
-    // Now we create an item to show in the Alfred drop down.
-    let item = powerpack::Item::new("Hello world!")
-        .subtitle(format!("Your query was '{:?}'", query))
-        .icon(powerpack::Icon::from_file_type("public.script"));
-
-    // Output the items to Alfred!
-    powerpack::output(iter::once(item))?;
-
-    Ok(())
+    match env::args().nth(1).map(|q| q.trim().to_string()) {
+        None => output(iter::empty()),
+        Some(query) => output(registry::walk(&query)?.take(50)),
+    }
 }
