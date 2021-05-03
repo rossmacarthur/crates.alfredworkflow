@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>name</key>
+	<string>crates-alfred-workflow</string>
+	<key>description</key>
+	<string>Search for Rust crates</string>
+	<key>bundleid</key>
+	<string>io.macarthur.ross.crates</string>
+	<key>createdby</key>
+	<string>Ross MacArthur</string>
+	<key>connections</key>
+	<dict>
+		<key>6D932454-F130-4AC9-B3E1-53BEE5578D22</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>C5AA69B0-47A6-477F-89F7-5F757DACFA82</string>
+			</dict>
+		</array>
+	</dict>
+	<key>uidata</key>
+	<dict>
+		<key>6D932454-F130-4AC9-B3E1-53BEE5578D22</key>
+		<dict>
+			<key>xpos</key>
+			<integer>50</integer>
+			<key>ypos</key>
+			<integer>50</integer>
+		</dict>
+		<key>C5AA69B0-47A6-477F-89F7-5F757DACFA82</key>
+		<dict>
+			<key>xpos</key>
+			<integer>225</integer>
+			<key>ypos</key>
+			<integer>50</integer>
+		</dict>
+	</dict>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>uid</key>
+			<string>C5AA69B0-47A6-477F-89F7-5F757DACFA82</string>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>config</key>
+			<dict>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>uid</key>
+			<string>6D932454-F130-4AC9-B3E1-53BEE5578D22</string>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>config</key>
+			<dict>
+				<key>keyword</key>
+				<string>crate</string>
+				<key>withspace</key>
+				<true />
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>title</key>
+				<string>Search</string>
+				<key>runningsubtext</key>
+				<string>Loading...</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>scriptfile</key>
+				<string>crates-alfred-workflow</string>
+				<key>queuemode</key>
+				<integer>2</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true />
+				<key>argumenttreatemptyqueryasnil</key>
+				<true />
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
