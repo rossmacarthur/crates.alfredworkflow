@@ -4,14 +4,17 @@
 
 Alfred workflow to search Rust crates.
 
+<img width="605" alt="Screenshot" src="https://user-images.githubusercontent.com/17109887/116975522-10c55c00-acc0-11eb-856d-e6145d49eebc.png">
+
 ## Features
 
-- Searches the local Cargo registry.
-- Opens the crate in the default browser
-  - crates.io/crates/{name} (default)
-  - lib.rs/crates/{name} (option modifier)
-  - docs.rs/{name} (shift modifier)
-- Blazingly fast 🤸 (it's built in Rust).
+- Search the local Cargo registry.
+- Opens the crate in the default browser. You can use modifiers to change the
+  URL that is navigated to.
+  - **⏎**: open the crate in https://crates.io.
+  - **⌥ ⏎**: open the crate in https://lib.rs.
+  - **⇧ ⏎**: open the crate in https://docs.rs.
+- Blazingly fast 🤸 (it's built in Rust 🦀).
 
 ## 📦 Installation
 
