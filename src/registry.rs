@@ -3,14 +3,23 @@ use std::fs;
 use std::io;
 use std::path::{Component, Path};
 
-use anyhow::Context as _;
+use semver::Version;
 use serde::Deserialize;
 use walkdir::{DirEntry, WalkDir};
 
 #[derive(Debug, Deserialize)]
 pub struct Package {
     pub name: String,
-    pub vers: String,
+    pub version: String,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+struct PackageVersion {
+    // Note: field ordering is important for finding the latest non-yanked
+    // package version.
+    yanked: bool,
+    vers: Version,
+    name: String,
 }
 
 mod fuzzy {
@@ -78,8 +87,17 @@ mod fuzzy {
 impl Package {
     fn from_path(path: &Path) -> anyhow::Result<Package> {
         let contents = fs::read_to_string(path)?;
-        let line = contents.lines().last().context("no lines")?;
-        Ok(serde_json::from_str(line)?)
+        let PackageVersion { name, vers, .. } = contents
+            .lines()
+            .map(|line| serde_json::from_str(line))
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .max()
+            .unwrap();
+        Ok(Self {
+            name,
+            version: vers.to_string(),
+        })
     }
 }
 
@@ -92,14 +110,26 @@ pub fn walk(query: &str) -> io::Result<impl Iterator<Item = Package> + '_> {
         .filter_entry(move |entry| {
             fuzzy::matches(query, entry.path().strip_prefix(&index).unwrap())
         })
-        .filter_map(Result::ok)
+        .filter_map(|entry| match entry {
+            Ok(entry) => Some(entry),
+            Err(err) => {
+                eprintln!("Error: {:?}", err);
+                None
+            }
+        })
         .filter(|entry| !entry.path().is_dir())
         .map(|entry| entry.into_path())
         .collect();
 
     Ok(paths
         .into_iter()
-        .filter_map(|path| Package::from_path(&path).ok()))
+        .filter_map(|path| match Package::from_path(&path) {
+            Ok(pkg) => Some(pkg),
+            Err(err) => {
+                eprintln!("Error: {}, {:?}", path.display(), err);
+                None
+            }
+        }))
 }
 
 #[test]

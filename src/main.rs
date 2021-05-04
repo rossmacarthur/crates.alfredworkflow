@@ -26,7 +26,7 @@ fn default(query: &str) -> Item<'static> {
 }
 
 fn to_item(pkg: registry::Package) -> Item<'static> {
-    Item::new(format!("{} v{}", pkg.name, pkg.vers))
+    Item::new(format!("{} v{}", pkg.name, pkg.version))
         .subtitle("Open in Crates.io →")
         .arg(format!("https://crates.io/crates/{}", pkg.name))
         .icon(Icon::new("icon.png"))
