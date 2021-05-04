@@ -4,6 +4,8 @@
 <dict>
 	<key>name</key>
 	<string>crates</string>
+	<key>version</key>
+	<string>0.1.0</string>
 	<key>description</key>
 	<string>Search for Rust crates.</string>
 	<key>bundleid</key>

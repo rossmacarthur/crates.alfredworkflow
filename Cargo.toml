@@ -6,7 +6,6 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 publish = false
 
-
 [dependencies]
 anyhow = "1.0"
 home = "0.5.3"
