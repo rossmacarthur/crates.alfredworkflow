@@ -102,14 +102,12 @@ impl Package {
 }
 
 pub fn walk(query: &str) -> Result<impl Iterator<Item = Package> + '_> {
-    let index = crate::index::cache_dir()?;
+    let index = &*crate::index::CACHE_DIR;
 
-    let paths: Vec<_> = WalkDir::new(&index)
+    let paths: Vec<_> = WalkDir::new(index)
         .sort_by(fuzzy::cmp)
         .into_iter()
-        .filter_entry(move |entry| {
-            fuzzy::matches(query, entry.path().strip_prefix(&index).unwrap())
-        })
+        .filter_entry(move |entry| fuzzy::matches(query, entry.path().strip_prefix(index).unwrap()))
         .filter_map(|entry| match entry {
             Ok(entry) => Some(entry),
             Err(err) => {

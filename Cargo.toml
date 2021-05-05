@@ -11,6 +11,7 @@ anyhow = "1.0"
 fs2 = "0.4.3"
 home = "0.5.3"
 libc = "0.2.94"
+once_cell = "1.7.2"
 powerpack = "0.1.1"
 semver = { version = "0.11.0", features = ["serde"] }
 serde = { version = "1.0.125", features = ["derive"] }
