@@ -1,8 +1,8 @@
 use std::cmp::Ordering;
 use std::fs;
-use std::io;
 use std::path::{Component, Path};
 
+use anyhow::Result;
 use semver::Version;
 use serde::Deserialize;
 use walkdir::{DirEntry, WalkDir};
@@ -85,7 +85,7 @@ mod fuzzy {
 }
 
 impl Package {
-    fn from_path(path: &Path) -> anyhow::Result<Package> {
+    fn from_path(path: &Path) -> Result<Package> {
         let contents = fs::read_to_string(path)?;
         let PackageVersion { name, vers, .. } = contents
             .lines()
@@ -101,8 +101,8 @@ impl Package {
     }
 }
 
-pub fn walk(query: &str) -> io::Result<impl Iterator<Item = Package> + '_> {
-    let index = home::cargo_home()?.join("registry").join("index");
+pub fn walk(query: &str) -> Result<impl Iterator<Item = Package> + '_> {
+    let index = crate::index::cache_dir()?;
 
     let paths: Vec<_> = WalkDir::new(&index)
         .sort_by(fuzzy::cmp)

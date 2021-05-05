@@ -1,3 +1,4 @@
+mod index;
 mod registry;
 
 use std::env;
@@ -45,6 +46,7 @@ fn to_item(pkg: registry::Package) -> Item<'static> {
 }
 
 fn output(query: &str) -> Result<()> {
+    index::check()?;
     powerpack::output(
         registry::walk(query)?
             .take(50)
