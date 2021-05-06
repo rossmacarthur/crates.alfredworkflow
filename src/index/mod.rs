@@ -10,7 +10,7 @@ use std::time::{Duration, SystemTime};
 use anyhow::{bail, Result};
 use once_cell::sync::Lazy;
 
-const UPDATE_INTERVAL: Duration = Duration::from_secs(24 * 60 * 60);
+const UPDATE_INTERVAL: Duration = Duration::from_secs(12 * 60 * 60);
 const CRATE_ID: &str = "io.macarthur.ross.crates";
 const CRATES_IO_INDEX: &str = "https://github.com/rust-lang/crates.io-index";
 
@@ -19,14 +19,19 @@ pub static CACHE_DIR: Lazy<PathBuf> = Lazy::new(|| HOME_DIR.join("Library/Caches
 static INDEX_DIR: Lazy<PathBuf> = Lazy::new(|| CACHE_DIR.join("crates.io-index"));
 static UPDATE_FILE: Lazy<PathBuf> = Lazy::new(|| INDEX_DIR.join(".last-modified"));
 
+fn git() -> process::Command {
+    let mut cmd = process::Command::new("git");
+    cmd.stdin(process::Stdio::null());
+    cmd.stdout(process::Stdio::null());
+    cmd.stderr(process::Stdio::null());
+    cmd
+}
+
 fn git_clone(url: &str, path: impl AsRef<Path>) -> Result<()> {
-    let output = process::Command::new("git")
+    let output = git()
         .args(&["clone", "--depth", "1"])
         .arg(url)
         .arg(path.as_ref())
-        .stdin(process::Stdio::null())
-        .stdout(process::Stdio::null())
-        .stderr(process::Stdio::null())
         .output()?;
     if !output.status.success() {
         bail!("failed to run `git clone` command");
@@ -34,17 +39,22 @@ fn git_clone(url: &str, path: impl AsRef<Path>) -> Result<()> {
     Ok(())
 }
 
-fn git_pull(path: impl AsRef<Path>) -> Result<()> {
-    let output = process::Command::new("git")
+fn git_fetch(path: impl AsRef<Path>) -> Result<()> {
+    let output = git().arg("-C").arg(path.as_ref()).arg("fetch").output()?;
+    if !output.status.success() {
+        bail!("failed to run `git fetch` command");
+    }
+    Ok(())
+}
+
+fn git_reset(path: impl AsRef<Path>) -> Result<()> {
+    let output = git()
         .arg("-C")
         .arg(path.as_ref())
-        .arg("pull")
-        .stdin(process::Stdio::null())
-        .stdout(process::Stdio::null())
-        .stderr(process::Stdio::null())
+        .args(&["reset", "--hard", "origin/HEAD"])
         .output()?;
     if !output.status.success() {
-        bail!("failed to run `git clone` command");
+        bail!("failed to run `git reset` command");
     }
     Ok(())
 }
@@ -58,7 +68,8 @@ fn download() -> Result<()> {
 
 fn update() -> Result<()> {
     let _mutex = mutex::acquire(&*CACHE_DIR)?;
-    git_pull(&*INDEX_DIR)?;
+    git_fetch(&*INDEX_DIR)?;
+    git_reset(&*INDEX_DIR)?;
     fs::File::create(&*UPDATE_FILE)?;
     Ok(())
 }
