@@ -38,10 +38,8 @@ where
         Fork::Parent => Ok(()),
         Fork::Child => {
             detach_fds()?;
-            if let Err(err) = f() {
-                eprintln!("Error: {:?}", err);
-            }
-            process::exit(0);
+            let code = f().is_err() as i32;
+            process::exit(code);
         }
     }
 }

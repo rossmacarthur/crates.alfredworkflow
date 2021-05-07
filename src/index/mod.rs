@@ -60,6 +60,7 @@ fn git_reset(path: impl AsRef<Path>) -> Result<()> {
 }
 
 fn download() -> Result<()> {
+    fs::create_dir_all(&*CACHE_DIR)?;
     let _mutex = mutex::acquire(&*CACHE_DIR)?;
     git_clone(CRATES_IO_INDEX, &*INDEX_DIR)?;
     fs::File::create(&*UPDATE_FILE)?;
