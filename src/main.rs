@@ -7,6 +7,25 @@ use std::iter;
 use anyhow::Result;
 use powerpack::{Icon, Item, ModifierData, ModifierKey};
 
+fn empty() -> Item<'static> {
+    Item::new("Search for crates")
+        .subtitle("Open Crates.io →")
+        .arg("https://crates.io")
+        .icon(Icon::new("icon.png"))
+        .modifier(
+            ModifierKey::Option,
+            ModifierData::new()
+                .subtitle("Open Lib.rs →")
+                .arg("https://lib.rs"),
+        )
+        .modifier(
+            ModifierKey::Shift,
+            ModifierData::new()
+                .subtitle("Open Docs.rs →")
+                .arg("https://docs.rs"),
+        )
+}
+
 fn default(query: &str) -> Item<'static> {
     Item::new(format!("Search for '{}'", query))
         .subtitle(format!("Search Crates.io for '{}' →", query))
@@ -58,7 +77,7 @@ fn output(query: &str) -> Result<()> {
 
 fn main() -> Result<()> {
     match env::args().nth(1).as_deref().map(str::trim) {
-        None | Some("") => powerpack::output(iter::empty())?,
+        None | Some("") => powerpack::output(iter::once(empty()))?,
         Some(query) => output(query)?,
     }
     Ok(())

@@ -72,7 +72,7 @@
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>title</key>
-				<string>Search</string>
+				<string>Search for crates</string>
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>type</key>
