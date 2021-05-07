@@ -26,9 +26,9 @@ enum Prefix<'a> {
     /// A directory to search and recurse directories.
     Recurse(PathBuf),
     /// A directory to search and recurse once the matching directories.
-    RecurseMatching1(PathBuf, &'a str),
+    RecurseOnceMatching(PathBuf, &'a str),
     /// A directory to search and recurse twice the matching directories.
-    RecurseMatching2(PathBuf, &'a str),
+    RecurseTwiceMatching(PathBuf, &'a str),
 }
 
 fn prefixes(index: PathBuf, query: &str) -> Vec<Prefix> {
@@ -43,7 +43,7 @@ fn prefixes(index: PathBuf, query: &str) -> Vec<Prefix> {
                 // ./3/a/{q*}
                 Prefix::List(index.join_all(&["3", query])),
                 // ./a*/*/{q*}
-                Prefix::RecurseMatching2(index, query),
+                Prefix::RecurseTwiceMatching(index, query),
             ]
         }
         2 => {
@@ -61,7 +61,7 @@ fn prefixes(index: PathBuf, query: &str) -> Vec<Prefix> {
                 // ./3/a/abc
                 Prefix::One(index.join_all(&["3", &query[0..1], query])),
                 // ./ab/c*/{q*}
-                Prefix::RecurseMatching1(index.join(&query[0..2]), &query[2..3]),
+                Prefix::RecurseOnceMatching(index.join(&query[0..2]), &query[2..3]),
             ]
         }
         _ => {
@@ -123,7 +123,7 @@ pub fn all(index: impl Into<PathBuf>, query: &str) -> io::Result<Vec<PathBuf>> {
                     }
                 }
             }
-            Prefix::RecurseMatching1(path, q) => {
+            Prefix::RecurseOnceMatching(path, q) => {
                 if let Some(rd) = read_dir(path)? {
                     for entry in rd {
                         let entry = entry?;
@@ -133,7 +133,7 @@ pub fn all(index: impl Into<PathBuf>, query: &str) -> io::Result<Vec<PathBuf>> {
                     }
                 }
             }
-            Prefix::RecurseMatching2(path, q) => {
+            Prefix::RecurseTwiceMatching(path, q) => {
                 if let Some(rd) = read_dir(path)? {
                     for entry in rd {
                         let entry = entry?;
