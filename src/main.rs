@@ -49,7 +49,7 @@ fn output(query: &str) -> Result<()> {
     index::check()?;
     powerpack::output(
         registry::walk(query)?
-            .take(50)
+            .take(10)
             .map(to_item)
             .chain(iter::once(default(query))),
     )?;

@@ -15,8 +15,8 @@ const CRATE_ID: &str = "io.macarthur.ross.crates";
 const CRATES_IO_INDEX: &str = "https://github.com/rust-lang/crates.io-index";
 
 static HOME_DIR: Lazy<PathBuf> = Lazy::new(|| home::home_dir().unwrap());
-pub static CACHE_DIR: Lazy<PathBuf> = Lazy::new(|| HOME_DIR.join("Library/Caches").join(CRATE_ID));
-static INDEX_DIR: Lazy<PathBuf> = Lazy::new(|| CACHE_DIR.join("crates.io-index"));
+static CACHE_DIR: Lazy<PathBuf> = Lazy::new(|| HOME_DIR.join("Library/Caches").join(CRATE_ID));
+pub static INDEX_DIR: Lazy<PathBuf> = Lazy::new(|| CACHE_DIR.join("crates.io-index"));
 static UPDATE_FILE: Lazy<PathBuf> = Lazy::new(|| INDEX_DIR.join(".last-modified"));
 
 fn git() -> process::Command {
