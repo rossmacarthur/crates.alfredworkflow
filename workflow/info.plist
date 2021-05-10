@@ -5,13 +5,17 @@
 	<key>name</key>
 	<string>crates</string>
 	<key>version</key>
-	<string>0.2.1</string>
+	<string>0.2.2</string>
 	<key>description</key>
 	<string>Search for Rust crates.</string>
 	<key>bundleid</key>
 	<string>io.macarthur.ross.crates</string>
 	<key>createdby</key>
 	<string>Ross MacArthur</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>webaddress</key>
+	<string>https://github.com/rossmacarthur/crates.alfredworkflow</string>
 	<key>connections</key>
 	<dict>
 		<key>6D932454-F130-4AC9-B3E1-53BEE5578D22</key>
