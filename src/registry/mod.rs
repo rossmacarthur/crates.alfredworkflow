@@ -8,7 +8,7 @@ use anyhow::Result;
 use semver::Version;
 use serde::Deserialize;
 
-use crate::index::INDEX_DIR;
+use crate::index::FILES;
 
 #[derive(Debug, Deserialize)]
 pub struct Package {
@@ -43,13 +43,13 @@ impl Package {
 }
 
 pub fn walk(query: &str) -> Result<impl Iterator<Item = Package> + '_> {
-    Ok(list::all(&*INDEX_DIR, query)?
-        .into_iter()
-        .filter_map(|path| match Package::from_path(&path) {
+    Ok(list::all(FILES.index_dir(), query)?.into_iter().filter_map(
+        |path| match Package::from_path(&path) {
             Ok(pkg) => Some(pkg),
             Err(err) => {
                 eprintln!("Error: {}, {:?}", path.display(), err);
                 None
             }
-        }))
+        },
+    ))
 }
