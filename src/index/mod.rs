@@ -1,5 +1,6 @@
+mod detach;
+mod logger;
 mod mutex;
-mod nix;
 
 use std::borrow::Cow;
 use std::env;
@@ -62,7 +63,7 @@ impl Files {
 fn git() -> process::Command {
     let mut cmd = process::Command::new("git");
     cmd.stdin(process::Stdio::null());
-    cmd.stdout(process::Stdio::null());
+    cmd.stdout(process::Stdio::piped());
     cmd.stderr(process::Stdio::null());
     cmd
 }
@@ -87,7 +88,7 @@ fn git_fetch(path: impl AsRef<Path>) -> Result<()> {
     Ok(())
 }
 
-fn git_reset(path: impl AsRef<Path>) -> Result<()> {
+fn git_reset(path: impl AsRef<Path>) -> Result<String> {
     let output = git()
         .arg("-C")
         .arg(path.as_ref())
@@ -96,22 +97,21 @@ fn git_reset(path: impl AsRef<Path>) -> Result<()> {
     if !output.status.success() {
         bail!("failed to run `git reset` command");
     }
-    Ok(())
+    Ok(String::from_utf8(output.stdout)?.trim().into())
 }
 
 fn download() -> Result<()> {
-    fs::create_dir_all(FILES.cache_dir())?;
-    let _mutex = mutex::acquire(FILES.cache_dir())?;
     git_clone(CRATES_IO_INDEX, FILES.index_dir())?;
     fs::File::create(FILES.update_file())?;
+    log::info!("downloaded index to ./crates.io-index");
     Ok(())
 }
 
 fn update() -> Result<()> {
-    let _mutex = mutex::acquire(FILES.cache_dir())?;
     git_fetch(FILES.index_dir())?;
-    git_reset(FILES.index_dir())?;
+    let output = git_reset(FILES.index_dir())?;
     fs::File::create(FILES.update_file())?;
+    log::info!("updated index ./crates.io-index: {}", output);
     Ok(())
 }
 
@@ -131,11 +131,10 @@ pub fn check() -> Result<()> {
             Err(err) => return Err(err.into()),
         };
         if needs_update {
-            nix::exec_child(update)?;
+            detach::child(|| mutex::or_ignore(update))?;
         }
     } else {
-        nix::exec_child(download)?;
+        detach::child(|| mutex::or_ignore(download))?;
     }
-
     Ok(())
 }
