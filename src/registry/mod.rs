@@ -1,6 +1,7 @@
 mod fuzzy;
 mod list;
 
+use std::cmp::Ordering;
 use std::fs;
 use std::path::Path;
 
@@ -16,13 +17,15 @@ pub struct Package {
     pub version: String,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Deserialize, PartialEq, Eq)]
 struct PackageVersion {
-    // Note: field ordering is important for finding the latest non-yanked
-    // package version.
-    yanked: bool,
-    vers: Version,
     name: String,
+    vers: Version,
+    yanked: bool,
+}
+
+fn cmp(a: &PackageVersion, b: &PackageVersion) -> Ordering {
+    (!a.yanked, &a.vers).cmp(&(!b.yanked, &b.vers))
 }
 
 impl Package {
@@ -33,7 +36,7 @@ impl Package {
             .map(|line| serde_json::from_str(line))
             .collect::<Result<Vec<_>, _>>()?
             .into_iter()
-            .max()
+            .max_by(cmp)
             .unwrap();
         Ok(Self {
             name,
