@@ -2,20 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>name</key>
-	<string>crates</string>
-	<key>version</key>
-	<string>0.2.2</string>
-	<key>description</key>
-	<string>Search for Rust crates.</string>
 	<key>bundleid</key>
 	<string>io.macarthur.ross.crates</string>
-	<key>createdby</key>
-	<string>Ross MacArthur</string>
 	<key>category</key>
 	<string>Productivity</string>
-	<key>webaddress</key>
-	<string>https://github.com/rossmacarthur/crates.alfredworkflow</string>
 	<key>connections</key>
 	<dict>
 		<key>6D932454-F130-4AC9-B3E1-53BEE5578D22</key>
@@ -23,9 +13,94 @@
 			<dict>
 				<key>destinationuid</key>
 				<string>D23842F2-2271-4DAE-AC91-FD8FFA716ADB</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 	</dict>
+	<key>createdby</key>
+	<string>Ross MacArthur</string>
+	<key>description</key>
+	<string>Search for Rust crates.</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>crates</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>{query}</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>D23842F2-2271-4DAE-AC91-FD8FFA716ADB</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>crate</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>2</integer>
+				<key>runningsubtext</key>
+				<string>Loading...</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string>crates-alfred-workflow</string>
+				<key>subtext</key>
+				<string></string>
+				<key>title</key>
+				<string>Search for crates</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>6D932454-F130-4AC9-B3E1-53BEE5578D22</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+	</array>
 	<key>uidata</key>
 	<dict>
 		<key>6D932454-F130-4AC9-B3E1-53BEE5578D22</key>
@@ -43,54 +118,9 @@
 			<integer>50</integer>
 		</dict>
 	</dict>
-	<key>objects</key>
-	<array>
-		<dict>
-			<key>uid</key>
-			<string>D23842F2-2271-4DAE-AC91-FD8FFA716ADB</string>
-			<key>type</key>
-			<string>alfred.workflow.action.openurl</string>
-			<key>version</key>
-			<integer>1</integer>
-			<key>config</key>
-			<dict>
-				<key>spaces</key>
-				<string></string>
-				<key>url</key>
-				<string>{query}</string>
-				<key>utf8</key>
-				<true/>
-			</dict>
-		</dict>
-		<dict>
-			<key>uid</key>
-			<string>6D932454-F130-4AC9-B3E1-53BEE5578D22</string>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>config</key>
-			<dict>
-				<key>keyword</key>
-				<string>crate</string>
-				<key>withspace</key>
-				<true />
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>title</key>
-				<string>Search for crates</string>
-				<key>runningsubtext</key>
-				<string>Loading...</string>
-				<key>type</key>
-				<integer>8</integer>
-				<key>scriptfile</key>
-				<string>crates-alfred-workflow</string>
-				<key>queuemode</key>
-				<integer>2</integer>
-				<key>queuedelayimmediatelyinitially</key>
-				<true />
-				<key>argumenttreatemptyqueryasnil</key>
-				<true />
-			</dict>
-		</dict>
-	</array>
+	<key>version</key>
+	<string>0.2.2</string>
+	<key>webaddress</key>
+	<string>https://github.com/rossmacarthur/crates.alfredworkflow</string>
 </dict>
 </plist>
