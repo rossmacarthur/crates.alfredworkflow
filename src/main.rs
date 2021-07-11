@@ -5,13 +5,12 @@ use std::env;
 use std::iter;
 
 use anyhow::Result;
-use powerpack::{Icon, Item, ModifierData, ModifierKey};
+use powerpack::{Item, ModifierData, ModifierKey};
 
 fn empty() -> Item<'static> {
     Item::new("Search for crates")
         .subtitle("Open Crates.io →")
         .arg("https://crates.io")
-        .icon(Icon::new("icon.png"))
         .modifier(
             ModifierKey::Option,
             ModifierData::new()
@@ -30,7 +29,6 @@ fn default(query: &str) -> Item<'static> {
     Item::new(format!("Search for '{}'", query))
         .subtitle(format!("Search Crates.io for '{}' →", query))
         .arg(format!("https://crates.io/search?q={}", query))
-        .icon(Icon::new("icon.png"))
         .modifier(
             ModifierKey::Option,
             ModifierData::new()
@@ -49,7 +47,6 @@ fn to_item(pkg: registry::Package) -> Item<'static> {
     Item::new(format!("{} v{}", pkg.name, pkg.version))
         .subtitle("Open in Crates.io →")
         .arg(format!("https://crates.io/crates/{}", pkg.name))
-        .icon(Icon::new("icon.png"))
         .modifier(
             ModifierKey::Option,
             ModifierData::new()
