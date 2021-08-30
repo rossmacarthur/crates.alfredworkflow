@@ -52,7 +52,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: extractions/setup-powerpack@v1
+      - uses: extractions/setup-crate@v1
+        with:
+          owner: rossmacarthur
+          name: powerpack
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
