@@ -39,6 +39,7 @@ version = "0.2.3"
 dependencies = [
  "anyhow",
  "chrono",
+ "dairy",
  "fs2",
  "home",
  "libc",

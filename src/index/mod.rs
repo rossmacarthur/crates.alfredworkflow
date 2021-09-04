@@ -2,8 +2,6 @@ mod detach;
 mod logger;
 mod mutex;
 
-use std::borrow::Cow;
-use std::env;
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -12,6 +10,7 @@ use std::time::{Duration, SystemTime};
 
 use anyhow::{bail, Result};
 use once_cell::sync::Lazy;
+use powerpack::env;
 
 const UPDATE_INTERVAL: Duration = Duration::from_secs(12 * 60 * 60);
 const CRATES_IO_INDEX: &str = "https://github.com/rust-lang/crates.io-index";
@@ -25,17 +24,15 @@ pub struct Files {
 
 impl Files {
     fn new() -> Self {
-        let cache_dir = env::var_os("alfred_workflow_cache")
-            .map(PathBuf::from)
-            .unwrap_or_else(|| {
-                let bundle_id = env::var("alfred_workflow_bundleid")
-                    .map(Cow::from)
-                    .unwrap_or_else(|_| Cow::from("io.macarthur.ross.crates"));
-                home::home_dir()
-                    .unwrap()
-                    .join("Library/Caches/com.runningwithcrayons.Alfred/Workflow Data")
-                    .join(&*bundle_id)
-            });
+        let cache_dir = env::workflow_cache().unwrap_or_else(|| {
+            let bundle_id = env::workflow_bundle_id()
+                .map(dairy::String::from)
+                .unwrap_or_else(|| "io.macarthur.ross.crates".into());
+            home::home_dir()
+                .unwrap()
+                .join("Library/Caches/com.runningwithcrayons.Alfred/Workflow Data")
+                .join(&*bundle_id)
+        });
 
         let index_dir = cache_dir.join("crates.io-index");
         let update_file = index_dir.join(".last-modified");

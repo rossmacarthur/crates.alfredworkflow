@@ -9,6 +9,7 @@ publish = false
 [dependencies]
 anyhow = "1.0.42"
 chrono = "0.4.19"
+dairy = "0.2.2"
 fs2 = "0.4.3"
 home = "0.5.3"
 libc = "0.2.98"
