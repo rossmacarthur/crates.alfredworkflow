@@ -45,6 +45,27 @@ powerpack package
 
 The release will be available at `target/workflow/crates.alfredworkflow`.
 
+### Debugging issues
+
+If you are experiencing issues you can debug the workflow in the following way:
+
+1. Inspect the output of the workflow by enabling debug mode in Alfred for the
+   workflow.
+
+2. The index is maintained asynchronously and will output any updates and errors
+   to a log file in the Alfred cache directly under the bundle name
+   `io.macarthur.ross.crates`. The default Alfred cache directory is
+  `~/Library/Caches/com.runningwithcrayons.Alfred/Workflow\ Data/io.macarthur.ross.crates`.
+  Expected logs will look like the following.
+  ```
+  [2022-01-31T11:10:24] [INFO] updated index ./crates.io-index: HEAD is now at 603fff76b2 Updating crate `midpoint#0.1.2`
+  [2022-02-04T15:06:07] [INFO] updated index ./crates.io-index: HEAD is now at 93d0942359 Updating crate `os_info_cli#2.0.0`
+  [2022-02-06T14:41:29] [INFO] updated index ./crates.io-index: HEAD is now at 5864e33978 Updating crate `agsol-gold-bot#0.0.0-alpha.2`
+  ```
+
+3. Open an [issue](https://github.com/rossmacarthur/crates.alfredworkflow/issues/new)
+   on this repo.
+
 ## License
 
 Licensed under either of
