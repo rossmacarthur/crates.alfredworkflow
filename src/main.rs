@@ -5,8 +5,10 @@ use std::env;
 use std::iter;
 
 use anyhow::Result;
+use either::Either;
 use powerpack::{Item, ModifierData, ModifierKey};
 
+/// Returns an Alfred item for when no query has been typed yet.
 fn empty() -> Item<'static> {
     Item::new("Search for crates")
         .subtitle("Open Crates.io →")
@@ -25,6 +27,7 @@ fn empty() -> Item<'static> {
         )
 }
 
+/// Returns an Alfred item for when the query doesn't match any crates.
 fn default(query: &str) -> Item<'static> {
     Item::new(format!("Search for '{}'", query))
         .subtitle(format!("Search Crates.io for '{}' →", query))
@@ -43,6 +46,7 @@ fn default(query: &str) -> Item<'static> {
         )
 }
 
+/// Converts a registry package to an Alfred item.
 fn to_item(pkg: registry::Package) -> Item<'static> {
     Item::new(format!("{} v{}", pkg.name, pkg.version))
         .subtitle("Open in Crates.io →")
@@ -61,21 +65,20 @@ fn to_item(pkg: registry::Package) -> Item<'static> {
         )
 }
 
-fn output(query: &str) -> Result<()> {
-    index::check()?;
-    powerpack::output(
-        registry::walk(query)?
-            .take(10)
-            .map(to_item)
-            .chain(iter::once(default(query))),
-    )?;
-    Ok(())
-}
-
 fn main() -> Result<()> {
-    match env::args().nth(1).as_deref().map(str::trim) {
-        None | Some("") => powerpack::output(iter::once(empty()))?,
-        Some(query) => output(query)?,
-    }
+    let arg = env::args().nth(1);
+    let items = match arg.as_deref().map(str::trim) {
+        None | Some("") => Either::Left(iter::once(empty())),
+        Some(query) => {
+            index::check()?;
+            Either::Right(
+                registry::walk(query)?
+                    .take(10)
+                    .map(to_item)
+                    .chain(iter::once(default(query))),
+            )
+        }
+    };
+    powerpack::output(items)?;
     Ok(())
 }

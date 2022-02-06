@@ -24,6 +24,7 @@ struct PackageVersion {
     yanked: bool,
 }
 
+/// Order by unyanked then version number.
 fn cmp(a: &PackageVersion, b: &PackageVersion) -> Ordering {
     (!a.yanked, &a.vers).cmp(&(!b.yanked, &b.vers))
 }
@@ -33,7 +34,7 @@ impl Package {
         let contents = fs::read_to_string(path)?;
         let PackageVersion { name, vers, .. } = contents
             .lines()
-            .map(|line| serde_json::from_str(line))
+            .map(serde_json::from_str)
             .collect::<Result<Vec<_>, _>>()?
             .into_iter()
             .max_by(cmp)
