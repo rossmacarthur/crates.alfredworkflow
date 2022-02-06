@@ -66,8 +66,12 @@ fn to_item(pkg: registry::Package) -> Item<'static> {
 }
 
 fn main() -> Result<()> {
-    let arg = env::args().nth(1);
-    let items = match arg.as_deref().map(str::trim) {
+    let arg = env::args()
+        .nth(1)
+        .as_deref()
+        .map(str::trim)
+        .map(str::to_ascii_lowercase);
+    let items = match arg.as_deref() {
         None | Some("") => Either::Left(iter::once(empty())),
         Some(query) => {
             index::check()?;
