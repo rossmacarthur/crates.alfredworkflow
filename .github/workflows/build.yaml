@@ -17,11 +17,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: actions-rs/toolchain@v1
-      with:
-        toolchain: ${{ matrix.toolchain }}
-        components: rustfmt, clippy
-        override: true
+    - name: Setup Rust
+      run: |
+        rustup set profile default
+        rustup toolchain install ${{ matrix.toolchain }}
+        rustup override set ${{ matrix.toolchain }}
 
     - name: Rustfmt
       run: cargo fmt -- --check
@@ -49,6 +49,10 @@ jobs:
     needs: check-version
     runs-on: macos-latest
 
+    strategy:
+      matrix:
+        target: [x86_64-apple-darwin, aarch64-apple-darwin]
+
     steps:
       - uses: actions/checkout@v2
 
@@ -59,11 +63,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
-          override: true
+      - name: Setup Rust
+        run: |
+          rustup set profile minimal
+          rustup toolchain install stable
+          rustup override set stable
+          rustup target add ${{ matrix.target }}
 
       - name: Calculate version from tag
         id: version
@@ -72,8 +77,8 @@ jobs:
       - name: Archive
         id: archive
         run: |
-          archive=crates-${{ steps.version.outputs.value }}-x86_64-apple-darwin.alfredworkflow
-          powerpack package
+          archive=crates-${{ steps.version.outputs.value }}-${{ matrix.target }}.alfredworkflow
+          powerpack package --target ${{ matrix.target }}
           mv target/workflow/crates.alfredworkflow "$archive"
           echo "::set-output name=path::$archive"
 
