@@ -1,16 +1,15 @@
-mod detach;
-mod logger;
-mod mutex;
-
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::process;
 use std::time::{Duration, SystemTime};
 
-use anyhow::{bail, Result};
+use anyhow::{bail, Context, Result};
 use once_cell::sync::Lazy;
+use powerpack::detach;
 use powerpack::env;
+
+use crate::logger;
 
 const UPDATE_INTERVAL: Duration = Duration::from_secs(12 * 60 * 60);
 const CRATES_IO_INDEX: &str = "https://github.com/rust-lang/crates.io-index";
@@ -44,7 +43,7 @@ impl Files {
         }
     }
 
-    fn cache_dir(&self) -> &Path {
+    pub fn cache_dir(&self) -> &Path {
         &self.cache_dir
     }
 
@@ -98,17 +97,36 @@ fn git_reset(path: impl AsRef<Path>) -> Result<String> {
 }
 
 fn download() -> Result<()> {
-    git_clone(CRATES_IO_INDEX, FILES.index_dir())?;
-    fs::File::create(FILES.update_file())?;
-    log::info!("downloaded index to ./crates.io-index");
-    Ok(())
+    logger::init()?;
+    maybe_run(|| {
+        git_clone(CRATES_IO_INDEX, FILES.index_dir())?;
+        fs::File::create(FILES.update_file())?;
+        log::info!("downloaded index to ./crates.io-index");
+        Ok(())
+    })
 }
 
 fn update() -> Result<()> {
-    git_fetch(FILES.index_dir())?;
-    let output = git_reset(FILES.index_dir())?;
-    fs::File::create(FILES.update_file())?;
-    log::info!("updated index ./crates.io-index: {}", output);
+    logger::init()?;
+    maybe_run(|| {
+        git_fetch(FILES.index_dir())?;
+        let output = git_reset(FILES.index_dir())?;
+        fs::File::create(FILES.update_file())?;
+        log::info!("updated index ./crates.io-index: {}", output);
+        Ok(())
+    })
+}
+
+fn maybe_run<F>(f: F) -> Result<()>
+where
+    F: FnOnce() -> Result<()>,
+{
+    let path = FILES.cache_dir();
+    if let Some(_mutex) =
+        fmutex::try_lock(path).with_context(|| format!("failed to lock `{}`", path.display()))?
+    {
+        f()?;
+    }
     Ok(())
 }
 
@@ -128,10 +146,18 @@ pub fn check() -> Result<()> {
             Err(err) => return Err(err.into()),
         };
         if needs_update {
-            detach::child(|| mutex::or_ignore(update))?;
+            detach::spawn(|| {
+                if let Err(err) = update() {
+                    log::error!("{:#}", err);
+                }
+            })?;
         }
     } else {
-        detach::child(|| mutex::or_ignore(download))?;
+        detach::spawn(|| {
+            if let Err(err) = download() {
+                log::error!("{:#}", err);
+            }
+        })?;
     }
     Ok(())
 }

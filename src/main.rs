@@ -1,4 +1,5 @@
 mod index;
+mod logger;
 mod registry;
 
 use std::env;

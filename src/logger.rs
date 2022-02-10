@@ -3,6 +3,7 @@ use std::io;
 use std::io::prelude::*;
 use std::sync::{Arc, Mutex};
 
+use anyhow::Result;
 use log::Log;
 use once_cell::sync::Lazy;
 
@@ -14,9 +15,9 @@ const LOG_FILENAME: &str = concat!(
     env!("CARGO_PKG_VERSION"),
     ".log"
 );
-pub static LOGGER: Lazy<Logger> = Lazy::new(|| Logger::new().unwrap());
+static LOGGER: Lazy<Logger> = Lazy::new(|| Logger::new().unwrap());
 
-pub struct Logger {
+struct Logger {
     file: Arc<Mutex<fs::File>>,
 }
 
@@ -50,4 +51,10 @@ impl Logger {
         let file = Arc::new(Mutex::new(file));
         Ok(Self { file })
     }
+}
+
+pub fn init() -> Result<()> {
+    log::set_logger(&*LOGGER)?;
+    log::set_max_level(log::LevelFilter::Info);
+    Ok(())
 }

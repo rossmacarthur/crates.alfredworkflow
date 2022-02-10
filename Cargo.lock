@@ -41,7 +41,7 @@ dependencies = [
  "chrono",
  "dairy",
  "either",
- "fs2",
+ "fmutex",
  "home",
  "libc",
  "log",
@@ -68,13 +68,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
-name = "fs2"
-version = "0.4.3"
+name = "fmutex"
+version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9564fc758e15025b46aa6643b1b77d047d1a56a1aea6e01002ac0c7026876213"
+checksum = "01e84c17070603126a7b0cd07d0ecc8e8cca4d15b67934ac2740286a84f3086c"
 dependencies = [
  "libc",
- "winapi",
 ]
 
 [[package]]
@@ -134,13 +133,24 @@ checksum = "da32515d9f6e6e489d7bc9d84c71b060db7247dc035bbe44eac88cf87486d8d5"
 
 [[package]]
 name = "powerpack"
-version = "0.2.2"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb6a673c676446c3b373f22508fda369c691eaa7aea7cd335c4333732fe827c9"
+checksum = "9e299b3aed251a9057e3d3ceb68ee205907b822f5af1b33ad1103ad915f0aa90"
 dependencies = [
  "dairy",
+ "powerpack-detach",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "powerpack-detach"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bac2253d0d1a106193b7057720e8428208a0cca0535d6bcc4f4f66ba030a0725"
+dependencies = [
+ "libc",
+ "log",
 ]
 
 [[package]]
