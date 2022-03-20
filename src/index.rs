@@ -25,8 +25,7 @@ impl Files {
     fn new() -> Self {
         let cache_dir = env::workflow_cache().unwrap_or_else(|| {
             let bundle_id = env::workflow_bundle_id()
-                .map(dairy::String::from)
-                .unwrap_or_else(|| "io.macarthur.ross.crates".into());
+                .unwrap_or_else(|| String::from("io.macarthur.ross.crates"));
             home::home_dir()
                 .unwrap()
                 .join("Library/Caches/com.runningwithcrayons.Alfred/Workflow Data")

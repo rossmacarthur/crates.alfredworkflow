@@ -7,60 +7,54 @@ use std::iter;
 
 use anyhow::Result;
 use either::Either;
-use powerpack::{Item, ModifierData, ModifierKey};
+use powerpack::{Item, Key, Modifier};
 
 /// Returns an Alfred item for when no query has been typed yet.
-fn empty() -> Item<'static> {
+fn empty() -> Item {
     Item::new("Search for crates")
         .subtitle("Open Crates.io →")
         .arg("https://crates.io")
         .modifier(
-            ModifierKey::Option,
-            ModifierData::new()
+            Modifier::new(Key::Option)
                 .subtitle("Open Lib.rs →")
                 .arg("https://lib.rs"),
         )
         .modifier(
-            ModifierKey::Shift,
-            ModifierData::new()
+            Modifier::new(Key::Shift)
                 .subtitle("Open Docs.rs →")
                 .arg("https://docs.rs"),
         )
 }
 
 /// Returns an Alfred item for when the query doesn't match any crates.
-fn default(query: &str) -> Item<'static> {
+fn default(query: &str) -> Item {
     Item::new(format!("Search for '{}'", query))
         .subtitle(format!("Search Crates.io for '{}' →", query))
         .arg(format!("https://crates.io/search?q={}", query))
         .modifier(
-            ModifierKey::Option,
-            ModifierData::new()
+            Modifier::new(Key::Option)
                 .subtitle(format!("Search Lib.rs for '{}' →", query))
                 .arg(format!("https://lib.rs/search?q={}", query)),
         )
         .modifier(
-            ModifierKey::Shift,
-            ModifierData::new()
+            Modifier::new(Key::Shift)
                 .subtitle(format!("Search Docs.rs for '{}' →", query))
                 .arg(format!("https://docs.rs/releases/search?query={}", query)),
         )
 }
 
 /// Converts a registry package to an Alfred item.
-fn to_item(pkg: registry::Package) -> Item<'static> {
+fn to_item(pkg: registry::Package) -> Item {
     Item::new(format!("{} v{}", pkg.name, pkg.version))
         .subtitle("Open in Crates.io →")
         .arg(format!("https://crates.io/crates/{}", pkg.name))
         .modifier(
-            ModifierKey::Option,
-            ModifierData::new()
+            Modifier::new(Key::Option)
                 .subtitle("Open in Lib.rs →")
                 .arg(format!("https://lib.rs/crates/{}", pkg.name)),
         )
         .modifier(
-            ModifierKey::Shift,
-            ModifierData::new()
+            Modifier::new(Key::Shift)
                 .subtitle("Open in Docs.rs →")
                 .arg(format!("https://docs.rs/{}", pkg.name)),
         )
