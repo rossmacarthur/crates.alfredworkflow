@@ -9,6 +9,19 @@ use anyhow::Result;
 use either::Either;
 use powerpack::{Item, Key, Modifier};
 
+#[derive(Debug)]
+pub enum Package {
+    Builtin { name: &'static str },
+    Registry { name: String, version: String },
+}
+
+fn builtins(query: &str) -> impl Iterator<Item = Package> + '_ {
+    ["alloc", "core", "std"]
+        .iter()
+        .filter(move |name| name.starts_with(query))
+        .map(|name| Package::Builtin { name })
+}
+
 /// Returns an Alfred item for when no query has been typed yet.
 fn empty() -> Item {
     Item::new("Search for crates")
@@ -44,20 +57,30 @@ fn default(query: &str) -> Item {
 }
 
 /// Converts a registry package to an Alfred item.
-fn to_item(pkg: registry::Package) -> Item {
-    Item::new(format!("{} v{}", pkg.name, pkg.version))
-        .subtitle("Open in Crates.io →")
-        .arg(format!("https://crates.io/crates/{}", pkg.name))
-        .modifier(
-            Modifier::new(Key::Option)
-                .subtitle("Open in Lib.rs →")
-                .arg(format!("https://lib.rs/crates/{}", pkg.name)),
-        )
-        .modifier(
-            Modifier::new(Key::Shift)
-                .subtitle("Open in Docs.rs →")
-                .arg(format!("https://docs.rs/{}", pkg.name)),
-        )
+fn to_item(pkg: Package) -> Item {
+    match pkg {
+        Package::Builtin { name } => Item::new(name)
+            .subtitle("Open official documentation (stable) →")
+            .arg(format!("https://doc.rust-lang.org/stable/{}/", name))
+            .modifier(
+                Modifier::new(Key::Option)
+                    .subtitle("Open official documentation (nightly) →")
+                    .arg(format!("https://doc.rust-lang.org/nightly/{}/", name)),
+            ),
+        Package::Registry { name, version } => Item::new(format!("{} v{}", name, version))
+            .subtitle("Open in Crates.io →")
+            .arg(format!("https://crates.io/crates/{}", name))
+            .modifier(
+                Modifier::new(Key::Option)
+                    .subtitle("Open in Lib.rs →")
+                    .arg(format!("https://lib.rs/crates/{}", name)),
+            )
+            .modifier(
+                Modifier::new(Key::Shift)
+                    .subtitle("Open in Docs.rs →")
+                    .arg(format!("https://docs.rs/{}", name)),
+            ),
+    }
 }
 
 fn main() -> Result<()> {
@@ -70,12 +93,11 @@ fn main() -> Result<()> {
         None | Some("") => Either::Left(iter::once(empty())),
         Some(query) => {
             index::check()?;
-            Either::Right(
-                registry::walk(query)?
-                    .take(10)
-                    .map(to_item)
-                    .chain(iter::once(default(query))),
-            )
+            let iter = builtins(query)
+                .chain(registry::walk(query)?.take(10))
+                .map(to_item)
+                .chain(iter::once(default(query)));
+            Either::Right(iter)
         }
     };
     powerpack::output(items)?;

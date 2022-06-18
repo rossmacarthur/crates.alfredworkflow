@@ -16,6 +16,7 @@
   - **⌥ ⏎**: opens the crate in https://lib.rs.
   - **⇧ ⏎**: opens the crate in https://docs.rs.
 - Manages a local [Crates.io index](https://github.com/rust-lang/crates.io-index).
+- Shortcuts for `std`, `core`, and `alloc` crates.
 - Blazingly fast 🤸.
 
 ## 📦 Installation
