@@ -65,7 +65,7 @@ fn git() -> process::Command {
 
 fn git_clone(url: &str, path: impl AsRef<Path>) -> Result<()> {
     let output = git()
-        .args(&["clone", "--depth", "1"])
+        .args(["clone", "--depth", "1"])
         .arg(url)
         .arg(path.as_ref())
         .output()?;
@@ -87,7 +87,7 @@ fn git_reset(path: impl AsRef<Path>) -> Result<String> {
     let output = git()
         .arg("-C")
         .arg(path.as_ref())
-        .args(&["reset", "--hard", "origin/HEAD"])
+        .args(["reset", "--hard", "origin/HEAD"])
         .output()?;
     if !output.status.success() {
         bail!("failed to run `git reset` command");
