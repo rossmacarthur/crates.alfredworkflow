@@ -1,6 +1,6 @@
 # crates.alfredworkflow
 
-[![Build status](https://img.shields.io/github/workflow/status/rossmacarthur/crates.alfredworkflow/build/trunk)](https://github.com/rossmacarthur/crates.alfredworkflow/actions?query=workflow%3Abuild)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/rossmacarthur/crates.alfredworkflow/build.yaml?branch=trunk)](https://github.com/rossmacarthur/crates.alfredworkflow/actions/workflows/build.yaml)
 [![Latest release](https://img.shields.io/github/v/release/rossmacarthur/crates.alfredworkflow)](https://github.com/rossmacarthur/crates.alfredworkflow/releases/latest)
 
 📦 Alfred workflow to search Rust crates.
@@ -71,10 +71,7 @@ If you are experiencing issues you can debug the workflow in the following way:
 
 ## License
 
-Licensed under either of
+This project is distributed under the terms of both the MIT license and the
+Apache License (Version 2.0).
 
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
-  http://www.apache.org/licenses/LICENSE-2.0)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
-
-at your option.
+See [LICENSE-APACHE](LICENSE-APACHE) and [LICENSE-MIT](LICENSE-MIT) for details.
