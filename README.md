@@ -5,7 +5,7 @@
 
 📦 Alfred workflow to search Rust crates.
 
-<img width="605" alt="Screenshot" src="https://user-images.githubusercontent.com/17109887/116975522-10c55c00-acc0-11eb-856d-e6145d49eebc.png">
+<img style="padding: 1rem 0" width="605" alt="Screenshot" src="https://user-images.githubusercontent.com/17109887/228117520-65aa485d-7252-4766-8fed-724d3a33f93b.gif">
 
 ## Features
 
