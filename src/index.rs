@@ -15,6 +15,12 @@ const UPDATE_INTERVAL: Duration = Duration::from_secs(12 * 60 * 60);
 const CRATES_IO_INDEX: &str = "https://github.com/rust-lang/crates.io-index";
 pub static FILES: Lazy<Files> = Lazy::new(Files::new);
 
+pub enum IndexStatus {
+    Ready,
+    Downloading,
+    Updating,
+}
+
 pub struct Files {
     cache_dir: PathBuf,
     index_dir: PathBuf,
@@ -98,7 +104,10 @@ fn git_reset(path: impl AsRef<Path>) -> Result<String> {
 fn download() -> Result<()> {
     logger::init()?;
     maybe_run(|| {
-        git_clone(CRATES_IO_INDEX, FILES.index_dir())?;
+        let tmp = FILES.index_dir().with_file_name("~crates.io-index");
+        fs::remove_dir_all(&tmp).ok();
+        git_clone(CRATES_IO_INDEX, &tmp)?;
+        fs::rename(&tmp, FILES.index_dir())?;
         fs::File::create(FILES.update_file())?;
         log::info!("downloaded index to ./crates.io-index");
         Ok(())
@@ -120,10 +129,7 @@ fn maybe_run<F>(f: F) -> Result<()>
 where
     F: FnOnce() -> Result<()>,
 {
-    let path = FILES.cache_dir();
-    if let Some(_mutex) =
-        fmutex::try_lock(path).with_context(|| format!("failed to lock `{}`", path.display()))?
-    {
+    if let Some(_guard) = lock_cache_dir()? {
         f()?;
     }
     Ok(())
@@ -133,8 +139,21 @@ where
 ///
 /// This function will spawn a subprocess to clone it if it missing or update it
 /// if it is out of date.
-pub fn check() -> Result<()> {
-    if FILES.index_dir().exists() {
+pub fn check() -> Result<IndexStatus> {
+    let index_dir_exists = FILES.index_dir().exists();
+
+    let index_status = {
+        if index_dir_exists {
+            match lock_cache_dir()? {
+                Some(_guard) => IndexStatus::Ready,
+                None => IndexStatus::Updating,
+            }
+        } else {
+            IndexStatus::Downloading
+        }
+    };
+
+    if index_dir_exists {
         let needs_update = match fs::metadata(FILES.update_file()) {
             Ok(metadata) => {
                 let now = SystemTime::now();
@@ -158,5 +177,11 @@ pub fn check() -> Result<()> {
             }
         })?;
     }
-    Ok(())
+
+    Ok(index_status)
+}
+
+fn lock_cache_dir() -> Result<Option<fmutex::Guard>> {
+    fmutex::try_lock(FILES.cache_dir())
+        .with_context(|| format!("failed to lock `{}`", FILES.cache_dir().display()))
 }

@@ -5,6 +5,7 @@ mod registry;
 use std::env;
 use std::iter;
 
+use crate::index::IndexStatus;
 use anyhow::Result;
 use either::Either;
 use powerpack::{Item, Key, Modifier};
@@ -83,23 +84,42 @@ fn to_item(pkg: Package) -> Item {
     }
 }
 
+fn append_index_status(items: &mut Vec<Item>, status: IndexStatus) {
+    match status {
+        IndexStatus::Ready => {}
+        IndexStatus::Downloading => items.push(
+            Item::new("Downloading index...")
+                .subtitle("The local Crates.io index is being downloaded. This may take a while."),
+        ),
+        IndexStatus::Updating => items.push(
+            Item::new("Updating index...").subtitle("The local Crates.io index is being updated"),
+        ),
+    };
+}
+
 fn main() -> Result<()> {
     let arg = env::args()
         .nth(1)
         .as_deref()
         .map(str::trim)
         .map(str::to_ascii_lowercase);
-    let items = match arg.as_deref() {
+
+    let index_status = index::check()?;
+
+    let mut items = Vec::from_iter(match arg.as_deref() {
         None | Some("") => Either::Left(iter::once(empty())),
         Some(query) => {
-            index::check()?;
             let iter = builtins(query)
                 .chain(registry::walk(query)?.take(10))
                 .map(to_item)
                 .chain(iter::once(default(query)));
             Either::Right(iter)
         }
-    };
+    });
+
+    append_index_status(&mut items, index_status);
+
     powerpack::output(items)?;
+
     Ok(())
 }
