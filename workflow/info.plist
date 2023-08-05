@@ -146,7 +146,7 @@ The default is to update every 6 hours.</string>
 		<string>360</string>
 	</dict>
 	<key>version</key>
-	<string>0.4.0</string>
+	<string>0.5.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/rossmacarthur/crates.alfredworkflow</string>
 </dict>

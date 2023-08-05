@@ -1,7 +1,7 @@
 # crates.alfredworkflow
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/rossmacarthur/crates.alfredworkflow/build.yaml?branch=trunk)](https://github.com/rossmacarthur/crates.alfredworkflow/actions/workflows/build.yaml)
-[![Latest release](https://img.shields.io/github/v/release/rossmacarthur/crates.alfredworkflow)](https://github.com/rossmacarthur/crates.alfredworkflow/releases/latest)
+[![Build Status](https://badgers.space/github/checks/rossmacarthur/crates.alfredworkflow?label=build)](https://github.com/rossmacarthur/crates.alfredworkflow/actions/workflows/build.yaml?query=branch%3Atrunk)
+[![Latest Release](https://badgers.space/github/release/rossmacarthur/crates.alfredworkflow)](https://github.com/rossmacarthur/crates.alfredworkflow/releases/latest)
 
 📦 Alfred workflow to search Rust crates.
 
