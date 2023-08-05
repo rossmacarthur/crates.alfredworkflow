@@ -25,7 +25,7 @@
 	<key>createdby</key>
 	<string>Ross MacArthur</string>
 	<key>description</key>
-	<string>Search for Rust crates.</string>
+	<string>Search for and browse to Rust crates</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
@@ -37,12 +37,14 @@
 			<dict>
 				<key>browser</key>
 				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
 				<key>spaces</key>
 				<string></string>
 				<key>url</key>
 				<string>{query}</string>
-				<key>utf8</key>
-				<true/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.openurl</string>
@@ -101,22 +103,47 @@
 			<integer>3</integer>
 		</dict>
 	</array>
+	<key>readme</key>
+	<string>## Features
+
+- Search for crates by name.
+- Open the crate in the default browser. You can use modifiers to change the
+  URL that is navigated to.
+  - ⏎: opens the crate in https://crates.io.
+  - ⌥ ⏎: opens the crate in https://lib.rs.
+  - ⇧ ⏎: opens the crate in https://docs.rs.
+- Shortcuts for `std`, `core`, and `alloc` crates.
+- Blazingly fast 🤸.
+
+## Configuration
+
+The workflow will automatically maintain a local index crates.io index. The
+index will be stored in the workflow cache directory. The update frequency can
+be configured be setting the `INDEX_UPDATE_INTERVAL_MINS` environment variable.
+The default is to update every 6 hours.</string>
 	<key>uidata</key>
 	<dict>
 		<key>6D932454-F130-4AC9-B3E1-53BEE5578D22</key>
 		<dict>
 			<key>xpos</key>
-			<integer>50</integer>
+			<real>50</real>
 			<key>ypos</key>
-			<integer>50</integer>
+			<real>50</real>
 		</dict>
 		<key>D23842F2-2271-4DAE-AC91-FD8FFA716ADB</key>
 		<dict>
 			<key>xpos</key>
-			<integer>225</integer>
+			<real>225</real>
 			<key>ypos</key>
-			<integer>50</integer>
+			<real>50</real>
 		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>variables</key>
+	<dict>
+		<key>INDEX_UPDATE_INTERVAL_MINS</key>
+		<string>360</string>
 	</dict>
 	<key>version</key>
 	<string>0.4.0</string>

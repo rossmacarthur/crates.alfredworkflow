@@ -15,7 +15,7 @@
   - **⏎**: opens the crate in https://crates.io.
   - **⌥ ⏎**: opens the crate in https://lib.rs.
   - **⇧ ⏎**: opens the crate in https://docs.rs.
-- Manages a local [Crates.io index](https://github.com/rust-lang/crates.io-index).
+- Manages a local [Crates.io index][crates.io-index].
 - Shortcuts for `std`, `core`, and `alloc` crates.
 - Blazingly fast 🤸.
 
@@ -48,7 +48,19 @@ powerpack package
 
 The release will be available at `target/workflow/crates.alfredworkflow`.
 
-### Debugging issues
+## Configuration
+
+The workflow will automatically maintain a local index
+[crates.io](crates.io-index) index. The index will be stored in the workflow
+cache directory. The update frequency can be configured be setting the
+`INDEX_UPDATE_INTERVAL_MINS` environment variable. The default is to update
+every 6 hours.
+
+| Name                       | Default | Description                    |
+| -------------------------- | ------- | ------------------------------ |
+| INDEX_UPDATE_INTERVAL_MINS | 360     | The update interval in minutes |
+
+## Debugging
 
 If you are experiencing issues you can debug the workflow in the following way:
 
@@ -68,6 +80,8 @@ If you are experiencing issues you can debug the workflow in the following way:
 
 3. Open an [issue](https://github.com/rossmacarthur/crates.alfredworkflow/issues/new)
    on this repo.
+
+[crates.io-index]: https://github.com/rust-lang/crates.io-index
 
 ## License
 

@@ -11,7 +11,6 @@ use powerpack::env;
 
 use crate::logger;
 
-const UPDATE_INTERVAL: Duration = Duration::from_secs(12 * 60 * 60);
 const CRATES_IO_INDEX: &str = "https://github.com/rust-lang/crates.io-index";
 pub static FILES: Lazy<Files> = Lazy::new(Files::new);
 
@@ -158,7 +157,7 @@ pub fn check() -> Result<IndexStatus> {
             Ok(metadata) => {
                 let now = SystemTime::now();
                 let then = metadata.modified()?;
-                now.duration_since(then)? > UPDATE_INTERVAL
+                now.duration_since(then)? > update_interval()
             }
             Err(err) if err.kind() == io::ErrorKind::NotFound => true,
             Err(err) => return Err(err.into()),
@@ -179,6 +178,13 @@ pub fn check() -> Result<IndexStatus> {
     }
 
     Ok(index_status)
+}
+
+fn update_interval() -> Duration {
+    let mins = env::var("INDEX_UPDATE_INTERVAL_MINS")
+        .and_then(|m| m.parse().ok())
+        .unwrap_or(6 * 60);
+    Duration::from_secs(mins * 60)
 }
 
 fn lock_cache_dir() -> Result<Option<fmutex::Guard>> {
