@@ -63,6 +63,7 @@ fn to_item(pkg: Package) -> Item {
         Package::Builtin { name } => Item::new(name)
             .subtitle("Open official documentation (stable) →")
             .arg(format!("https://doc.rust-lang.org/stable/{}/", name))
+            .autocomplete(name)
             .modifier(
                 Modifier::new(Key::Option)
                     .subtitle("Open official documentation (nightly) →")
@@ -71,6 +72,7 @@ fn to_item(pkg: Package) -> Item {
         Package::Registry { name, version } => Item::new(format!("{} v{}", name, version))
             .subtitle("Open in Crates.io →")
             .arg(format!("https://crates.io/crates/{}", name))
+            .autocomplete(&name)
             .modifier(
                 Modifier::new(Key::Option)
                     .subtitle("Open in Lib.rs →")
