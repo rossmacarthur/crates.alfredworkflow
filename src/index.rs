@@ -181,7 +181,7 @@ pub fn check() -> Result<IndexStatus> {
 }
 
 fn update_interval() -> Duration {
-    let mins = env::var("INDEX_UPDATE_INTERVAL_MINS")
+    let mins = env::var("crates_index_update_interval")
         .and_then(|m| m.parse().ok())
         .unwrap_or(6 * 60);
     Duration::from_secs(mins * 60)

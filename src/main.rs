@@ -84,15 +84,19 @@ fn to_item(pkg: Package) -> Item {
     }
 }
 
+/// Appends an item indicating the status of the index (downloading or updating).
 fn append_index_status(items: &mut Vec<Item>, status: IndexStatus) {
     match status {
         IndexStatus::Ready => {}
         IndexStatus::Downloading => items.push(
             Item::new("Downloading index...")
-                .subtitle("The local Crates.io index is being downloaded. This may take a while."),
+                .subtitle("The local Crates.io index is being downloaded. This may take a while.")
+                .valid(false),
         ),
         IndexStatus::Updating => items.push(
-            Item::new("Updating index...").subtitle("The local Crates.io index is being updated"),
+            Item::new("Updating index...")
+                .subtitle("The local Crates.io index is being updated")
+                .valid(false),
         ),
     };
 }
