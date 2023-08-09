@@ -52,13 +52,8 @@ The release will be available at `target/workflow/crates.alfredworkflow`.
 
 The workflow will automatically maintain a local index
 [crates.io](crates.io-index) index. The index will be stored in the workflow
-cache directory. The update frequency can be configured be setting the
-`INDEX_UPDATE_INTERVAL_MINS` environment variable. The default is to update
-every 6 hours.
-
-| Name                       | Default | Description                    |
-| -------------------------- | ------- | ------------------------------ |
-| INDEX_UPDATE_INTERVAL_MINS | 360     | The update interval in minutes |
+cache directory. The update frequency can be configured be setting the index
+update interval.
 
 ## Debugging
 

@@ -74,8 +74,7 @@ jobs:
           archive=crates-${{ steps.version.outputs.value }}-${{ matrix.target }}.alfredworkflow
           powerpack package --target ${{ matrix.target }}
           mv target/workflow/crates.alfredworkflow "$archive"
-          echo "name=$archive" >> $GITHUB_OUTPUT
-          echo "::set-output name=path::$archive"
+          echo "path=$archive" >> $GITHUB_OUTPUT
 
       - uses: softprops/action-gh-release@v1
         env:
