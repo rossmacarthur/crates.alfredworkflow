@@ -57,8 +57,7 @@ jobs:
 
       - uses: extractions/setup-crate@v1
         with:
-          owner: rossmacarthur
-          name: powerpack
+          repo: rossmacarthur/powerpack
 
       - uses: dtolnay/rust-toolchain@stable
         with:
