@@ -1,5 +1,4 @@
 mod index;
-mod logger;
 mod registry;
 
 use std::env;
@@ -7,8 +6,14 @@ use std::iter;
 
 use crate::index::IndexStatus;
 use anyhow::Result;
+use constcat::concat;
 use either::Either;
+use powerpack::logger;
 use powerpack::{Item, Key, Modifier};
+
+const PKG_NAME: &str = env!("CARGO_PKG_NAME");
+const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
+const LOG_FILE: &str = concat!(PKG_NAME, "-", PKG_VERSION, ".log");
 
 #[derive(Debug)]
 pub enum Package {
@@ -109,6 +114,8 @@ fn append_index_status(items: &mut Vec<Item>, status: IndexStatus) {
 }
 
 fn main() -> Result<()> {
+    logger::Builder::new().filename(LOG_FILE).try_init()?;
+
     let arg = env::args()
         .nth(1)
         .as_deref()

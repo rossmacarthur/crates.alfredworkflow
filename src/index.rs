@@ -2,17 +2,15 @@ use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::process;
+use std::sync::LazyLock;
 use std::time::{Duration, SystemTime};
 
 use anyhow::{bail, Context, Result};
-use once_cell::sync::Lazy;
 use powerpack::detach;
 use powerpack::env;
 
-use crate::logger;
-
 const CRATES_IO_INDEX: &str = "https://github.com/rust-lang/crates.io-index";
-pub static FILES: Lazy<Files> = Lazy::new(Files::new);
+pub static FILES: LazyLock<Files> = LazyLock::new(Files::new);
 
 pub enum IndexStatus {
     Ready,
@@ -101,7 +99,6 @@ fn git_reset(path: impl AsRef<Path>) -> Result<String> {
 }
 
 fn download() -> Result<()> {
-    logger::init()?;
     maybe_run(|| {
         let tmp = FILES.index_dir().with_file_name("~crates.io-index");
         fs::remove_dir_all(&tmp).ok();
@@ -114,7 +111,6 @@ fn download() -> Result<()> {
 }
 
 fn update() -> Result<()> {
-    logger::init()?;
     maybe_run(|| {
         git_fetch(FILES.index_dir())?;
         let output = git_reset(FILES.index_dir())?;
