@@ -1,6 +1,6 @@
 [package]
 name = "crates-alfred-workflow"
-version = "0.6.0"
+version = "0.6.1"
 authors = ["Ross MacArthur <ross@macarthur.io>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -14,7 +14,7 @@ fmutex = "0.1.0"
 home = "0.5.9"
 libc = "0.2.155"
 log = { version = "0.4.22", features = ["std"] }
-powerpack = { version = "0.6.0", features = ["detach", "logger"] }
+powerpack = { version = "0.6.2", features = ["detach", "logger"] }
 semver = { version = "1.0.23", features = ["serde"] }
 serde = { version = "1.0.203", features = ["derive"] }
 serde_json = "1.0.120"

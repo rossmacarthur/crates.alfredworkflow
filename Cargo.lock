@@ -16,7 +16,7 @@ checksum = "5ffb5df6dd5dadb422897e8132f415d7a054e3cd757e5070b663f75bea1840fb"
 
 [[package]]
 name = "crates-alfred-workflow"
-version = "0.6.0"
+version = "0.6.1"
 dependencies = [
  "anyhow",
  "constcat",
