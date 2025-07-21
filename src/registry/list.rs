@@ -31,7 +31,7 @@ enum Prefix<'a> {
     RecurseTwiceMatching(PathBuf, &'a str),
 }
 
-fn prefixes(index: PathBuf, query: &str) -> Vec<Prefix> {
+fn prefixes(index: PathBuf, query: &str) -> Vec<Prefix<'_>> {
     match query.len() {
         0 => vec![],
         1 => {

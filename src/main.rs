@@ -47,18 +47,18 @@ fn empty() -> Item {
 
 /// Returns an Alfred item for when the query doesn't match any crates.
 fn default(query: &str) -> Item {
-    Item::new(format!("Search for '{}'", query))
-        .subtitle(format!("Search Crates.io for '{}' →", query))
-        .arg(format!("https://crates.io/search?q={}", query))
+    Item::new(format!("Search for '{query}'"))
+        .subtitle(format!("Search Crates.io for '{query}' →"))
+        .arg(format!("https://crates.io/search?q={query}"))
         .modifier(
             Modifier::new(Key::Option)
-                .subtitle(format!("Search Lib.rs for '{}' →", query))
-                .arg(format!("https://lib.rs/search?q={}", query)),
+                .subtitle(format!("Search Lib.rs for '{query}' →"))
+                .arg(format!("https://lib.rs/search?q={query}")),
         )
         .modifier(
             Modifier::new(Key::Shift)
-                .subtitle(format!("Search Docs.rs for '{}' →", query))
-                .arg(format!("https://docs.rs/releases/search?query={}", query)),
+                .subtitle(format!("Search Docs.rs for '{query}' →"))
+                .arg(format!("https://docs.rs/releases/search?query={query}")),
         )
 }
 
@@ -67,31 +67,31 @@ fn to_item(pkg: Package) -> Item {
     match pkg {
         Package::Builtin { name } => Item::new(name)
             .subtitle("Open official documentation (stable) →")
-            .arg(format!("https://doc.rust-lang.org/stable/{}/", name))
+            .arg(format!("https://doc.rust-lang.org/stable/{name}/"))
             .autocomplete(name)
             .modifier(
                 Modifier::new(Key::Shift)
                     .subtitle("Open official documentation (nightly) →")
-                    .arg(format!("https://doc.rust-lang.org/nightly/{}/", name)),
+                    .arg(format!("https://doc.rust-lang.org/nightly/{name}/")),
             )
             .modifier(
                 Modifier::new(Key::Option)
                     .subtitle("Open official documentation (beta) →")
-                    .arg(format!("https://doc.rust-lang.org/beta/{}/", name)),
+                    .arg(format!("https://doc.rust-lang.org/beta/{name}/")),
             ),
-        Package::Registry { name, version } => Item::new(format!("{} v{}", name, version))
+        Package::Registry { name, version } => Item::new(format!("{name} v{version}"))
             .subtitle("Open in Crates.io →")
-            .arg(format!("https://crates.io/crates/{}", name))
+            .arg(format!("https://crates.io/crates/{name}"))
             .autocomplete(&name)
             .modifier(
                 Modifier::new(Key::Option)
                     .subtitle("Open in Lib.rs →")
-                    .arg(format!("https://lib.rs/crates/{}", name)),
+                    .arg(format!("https://lib.rs/crates/{name}")),
             )
             .modifier(
                 Modifier::new(Key::Shift)
                     .subtitle("Open in Docs.rs →")
-                    .arg(format!("https://docs.rs/{}", name)),
+                    .arg(format!("https://docs.rs/{name}")),
             ),
     }
 }
