@@ -3,7 +3,7 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::process;
 use std::sync::LazyLock;
-use std::time::{Duration, SystemTime};
+use std::time::Duration;
 
 use anyhow::{bail, Context, Result};
 use powerpack::detach;
@@ -150,25 +150,21 @@ pub fn check() -> Result<IndexStatus> {
 
     if index_dir_exists {
         let needs_update = match fs::metadata(FILES.update_file()) {
-            Ok(metadata) => {
-                let now = SystemTime::now();
-                let then = metadata.modified()?;
-                now.duration_since(then)? > update_interval()
-            }
+            Ok(metadata) => metadata.modified()?.elapsed()? > update_interval(),
             Err(err) if err.kind() == io::ErrorKind::NotFound => true,
             Err(err) => return Err(err.into()),
         };
         if needs_update {
             detach::spawn(|| {
                 if let Err(err) = update() {
-                    log::error!("{:#}", err);
+                    log::error!("{}", detach::format_err(err.as_ref()));
                 }
             })?;
         }
     } else {
         detach::spawn(|| {
             if let Err(err) = download() {
-                log::error!("{:#}", err);
+                log::error!("{}", detach::format_err(err.as_ref()));
             }
         })?;
     }
